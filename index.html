@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>מגה מחשבון העדשים של אורי</title>
+  <style>
+    body {
+      direction: rtl;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #40e0d0, #8a2be2);
+      padding: 20px;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    h1 {
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .section {
+      background: rgba(255,255,255,0.8);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+    }
+    input {
+      padding: 10px;
+      font-size: 1.1em;
+      width: 100px;
+      margin: 10px 0;
+      border: 2px solid #663399;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #663399;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+    button:active .shake {
+      animation: shake 0.5s;
+    }
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      20% { transform: translate(-1px, -2px) rotate(-1deg); }
+      40% { transform: translate(-3px, 0px) rotate(1deg); }
+      60% { transform: translate(3px, 2px) rotate(0deg); }
+      80% { transform: translate(1px, -1px) rotate(1deg); }
+      100% { transform: translate(-1px, 2px) rotate(-1deg); }
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 1.2em;
+      min-height: 2em;
+    }
+    /* Falling lentils animation */
+    .lentil {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #deb887;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: fall linear;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-20px); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+    /* Crazy mode screen shake */
+    .crazy {
+      animation: crazeshake 0.1s infinite;
+    }
+    @keyframes crazeshake {
+      0% { transform: translate(2px, 1px); }
+      50% { transform: translate(-2px, -1px); }
+      100% { transform: translate(2px, 1px); }
+    }
+    /* Timer display */
+    .timer {
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    /* Hidden audio controls */
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>מגה מחשבון העדשים של אורי</h1>
+  <div class="section" id="calcSection">
+    <h3>כמה עדשים אתה שותל?</h3>
+    <input type="number" id="inputPlanted" placeholder="מספר שלם בלבד">
+    <button onclick="calculateFromPlanted()">חשב</button>
+    <div class="result" id="resultPlanted"></div>
+
+    <h3>כמה עדשים אתה רוצה שייצאו?</h3>
+    <input type="number" id="inputWanted" placeholder="מספר שלם בלבד">
+    <button onclick="calculateNeeded()">חשב</button>
+    <div class="result" id="resultNeeded"></div>
+  </div>
+
+  <div class="section">
+    <button onclick="startTracking()">אני שותל עכשיו</button>
+    <div class="timer" id="timerDisplay"></div>
+  </div>
+
+  <div class="section">
+    <button onclick="showRecipe()">מה אני יכול לבשל עם זה?</button>
+    <div class="result" id="recipeResult"></div>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://www.example.com/upbeat.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Utility: spawn falling lentils
+    function spawnLentil() {
+      const lentil = document.createElement('div');
+      lentil.className = 'lentil';
+      lentil.style.left = Math.random() * 100 + 'vw';
+      lentil.style.animationDuration = (Math.random()*3 + 2) + 's';
+      document.body.appendChild(lentil);
+      setTimeout(() => lentil.remove(), 5000);
+    }
+    setInterval(spawnLentil, 300);
+
+    // Calculate from planted
+    function calculateFromPlanted() {
+      const val = document.getElementById("inputPlanted").value;
+      const res = document.getElementById("resultPlanted");
+      if (!val) return res.innerText = "הכנסת משהו?";
+      if (val.includes('.')) return res.innerText = "תכניס מספר שלם, לא עשרוני!";
+      const num = parseInt(val);
+      if (num === 0) return res.innerText = "אתה בכלל מתכוון לשתול עדשים?";
+      if (num < 0) return res.innerText = "איזה מיסטר מתחקמן אתה...";
+      const min = num * 10;
+      const max = num * 30;
+      playPop();
+      return res.innerHTML = `אם תשתול ${num} עדשים, תקבל בין <strong>${min}</strong> ל־<strong>${max}</strong> עדשים!`;
+    }
+
+    // Calculate needed
+    function calculateNeeded() {
+      const val = document.getElementById("inputWanted").value;
+      const res = document.getElementById("resultNeeded");
+      if (!val) return res.innerText = "הכנסת משהו?";
+      if (val.includes('.')) return res.innerText = "אפשר רק מספרים שלמים, לא עשרוניים!";
+      const num = parseInt(val);
+      if (num <= 0) return res.innerText = "אתה מתכוון לגדל שלילשים?";
+      const minSeeds = Math.ceil(num / 30);
+      const maxSeeds = Math.ceil(num / 10);
+      playPop();
+      return res.innerHTML = `כדי לקבל לפחות ${num} עדשים, כדאי לשתול בין <strong>${minSeeds}</strong> ל־<strong>${maxSeeds}</strong> עדשים.`;
+    }
+
+    // Timer tracking
+    let startDate = null;
+    function startTracking() {
+      startDate = new Date();
+      document.getElementById('timerDisplay').innerText = 'גידול התחיל: ' + startDate.toLocaleDateString();
+      playMusic();
+    }
+
+    // Recipe suggestion
+    function showRecipe() {
+      const plantedVal = parseInt(document.getElementById('inputPlanted').value) || 0;
+      let text;
+      if (plantedVal < 5) text = 'נסי מרק עדשים פשוט עם קצת סלרי ובצל.';
+      else if (plantedVal < 15) text = 'קציצות עדשים עם ירקות במינון משובח.';
+      else text = 'תבשיל עדשים הודי עם תבלינים קשים!';
+      document.getElementById('recipeResult').innerText = text;
+    }
+
+    // Pop sound effect
+    function playPop() {
+      const audio = new Audio('https://www.example.com/pop.mp3');
+      audio.play();
+    }
+
+    // Background music controls
+    function playMusic() {
+      const bg = document.getElementById('bgMusic');
+      bg.play();
+    }
+
+    // Crazy mode: user enters million seeds
+    document.getElementById('inputPlanted').addEventListener('input', e => {
+      if (parseInt(e.target.value) >= 1000000) {
+        document.body.classList.add('crazy');
+        setTimeout(() => document.body.classList.remove('crazy'), 2000);
+      }
+    });
+  </script>
+</body>
+</html>
