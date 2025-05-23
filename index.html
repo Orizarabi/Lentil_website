@@ -2,7 +2,8 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>מגה מחשבון העדשים של אורי</title>
+  <title>מחשבון עדשים - מגה כלי לחישוב וגידול עדשים | אורי זרבי</title>
+  <meta name="description" content="מחשבון העדשים של אורי זרבי הוא הכלי המושלם לחישוב עדשים, גידול עדשים בבית, והשראה למתכונים עם עדשים. השתמשו בו כדי לגלות כמה עדשים תקבלו וכמה צריך לשתול.">
   <style>
     body {
       direction: rtl;
@@ -60,7 +61,6 @@
       font-size: 1.2em;
       min-height: 2em;
     }
-    /* Falling lentils animation */
     .lentil {
       position: absolute;
       width: 15px;
@@ -74,7 +74,6 @@
       0% { transform: translateY(-20px); opacity: 1; }
       100% { transform: translateY(100vh); opacity: 0; }
     }
-    /* Crazy mode screen shake */
     .crazy {
       animation: crazeshake 0.1s infinite;
     }
@@ -83,12 +82,10 @@
       50% { transform: translate(-2px, -1px); }
       100% { transform: translate(2px, 1px); }
     }
-    /* Timer display */
     .timer {
       font-size: 1em;
       margin-top: 10px;
     }
-    /* Hidden audio controls */
     audio {
       display: none;
     }
@@ -96,6 +93,8 @@
 </head>
 <body>
   <h1>מגה מחשבון העדשים של אורי</h1>
+  <p>ברוכים הבאים למחשבון הכי מדויק בארץ! כאן תוכלו לחשב כמה עדשים תצטרכו לשתול, כמה תקבלו, ואפילו מה אפשר לבשל עם זה. האתר מתאים גם למי שרוצה ללמוד על גידול עדשים בבית.</p>
+
   <div class="section" id="calcSection">
     <h3>כמה עדשים אתה שותל?</h3>
     <input type="number" id="inputPlanted" placeholder="מספר שלם בלבד">
@@ -123,7 +122,6 @@
   </audio>
 
   <script>
-    // Utility: spawn falling lentils
     function spawnLentil() {
       const lentil = document.createElement('div');
       lentil.className = 'lentil';
@@ -134,7 +132,6 @@
     }
     setInterval(spawnLentil, 300);
 
-    // Calculate from planted
     function calculateFromPlanted() {
       const val = document.getElementById("inputPlanted").value;
       const res = document.getElementById("resultPlanted");
@@ -149,7 +146,6 @@
       return res.innerHTML = `אם תשתול ${num} עדשים, תקבל בין <strong>${min}</strong> ל־<strong>${max}</strong> עדשים!`;
     }
 
-    // Calculate needed
     function calculateNeeded() {
       const val = document.getElementById("inputWanted").value;
       const res = document.getElementById("resultNeeded");
@@ -163,7 +159,6 @@
       return res.innerHTML = `כדי לקבל לפחות ${num} עדשים, כדאי לשתול בין <strong>${minSeeds}</strong> ל־<strong>${maxSeeds}</strong> עדשים.`;
     }
 
-    // Timer tracking
     let startDate = null;
     function startTracking() {
       startDate = new Date();
@@ -171,7 +166,6 @@
       playMusic();
     }
 
-    // Recipe suggestion
     function showRecipe() {
       const plantedVal = parseInt(document.getElementById('inputPlanted').value) || 0;
       let text;
@@ -181,19 +175,16 @@
       document.getElementById('recipeResult').innerText = text;
     }
 
-    // Pop sound effect
     function playPop() {
       const audio = new Audio('https://www.example.com/pop.mp3');
       audio.play();
     }
 
-    // Background music controls
     function playMusic() {
       const bg = document.getElementById('bgMusic');
       bg.play();
     }
 
-    // Crazy mode: user enters million seeds
     document.getElementById('inputPlanted').addEventListener('input', e => {
       if (parseInt(e.target.value) >= 1000000) {
         document.body.classList.add('crazy');
